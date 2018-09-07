@@ -1,0 +1,9 @@
+
+C:\_Work_\_JAVA_\gs-rest-service-master\complete\test-caller>rem set URL=http://localhost:8080/gs-rest-service-0.1.0 
+
+C:\_Work_\_JAVA_\gs-rest-service-master\complete\test-caller>set URL=http://localhost:8080 
+
+C:\_Work_\_JAVA_\gs-rest-service-master\complete\test-caller>rem set URL=http://localhost:8080/ws-eetp 
+
+C:\_Work_\_JAVA_\gs-rest-service-master\complete\test-caller>curl -X GET http://localhost:8080/testCallRemote 
+200 <err>ORA-01403: данные не найдены</err>

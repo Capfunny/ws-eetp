@@ -1,0 +1,3 @@
+call mvn install:install-file -Dfile=lib/ASN1P.jar -DgroupId=ru.crypto.CryptoProJCP -DartifactId=ASN1P -Dversion=1.0.54 -Dpackaging=jar
+call mvn install:install-file -Dfile=lib/asn1rt.jar -DgroupId=ru.crypto.CryptoProJCP -DartifactId=asn1rt -Dversion=1.0.54 -Dpackaging=jar
+call mvn install:install-file -Dfile=lib/JCP.jar -DgroupId=ru.crypto.CryptoProJCP -DartifactId=JCP -Dversion=1.0.54 -Dpackaging=jar

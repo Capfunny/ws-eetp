@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- version 1.1 -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.sberbank.ru/edo/oep/edo-oep-document" targetNamespace="http://www.sberbank.ru/edo/oep/edo-oep-document" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="Package">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="TypeDocument">
+					<xs:annotation>
+						<xs:documentation>Тип документа</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="30"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Document" type="xs:base64Binary" nillable="false" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>Тело сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Signature">
+					<xs:annotation>
+						<xs:documentation>Подпись</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="15000"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

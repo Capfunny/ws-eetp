@@ -1,0 +1,1419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- version 1.14 -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.sberbank.ru/edo/oep/edo-oep-proc" targetNamespace="http://www.sberbank.ru/edo/oep/edo-oep-proc" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!--========================  Блокировка денежных средств на счёте участника закупки  ========================= -->
+	<xs:element name="FundsHoldRq">
+		<xs:annotation>
+			<xs:documentation>Запрос на блокировку денежных средств на счёте участника закупки</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AppID" type="tns:AppIDType">
+					<xs:annotation>
+						<xs:documentation>Номер заявки на участие в закупках (уникальный ID в пределах площадки)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="EntryCloseTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время окончания приёма заявок по конкурсу</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Name" type="tns:NameType">
+					<xs:annotation>
+						<xs:documentation>Участник закупки: название в случае ЮЛ/ИП / ФИО в случае ФЛ</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="INN" type="tns:INNType">
+					<xs:annotation>
+						<xs:documentation>ИНН участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="KPP" type="tns:KPPType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>КПП участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Account" type="tns:AccountType">
+					<xs:annotation>
+						<xs:documentation>Счёт участника закупки, на котором будут заблокированы средства</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AmountToHoldx100" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>Сумма, которую необходимо заблокировать (умноженная на 100)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="FundsHoldRs">
+		<xs:annotation>
+			<xs:documentation>Ответ на Запрос на блокировку денежных средств на счёте участника закупки</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="CorrelationID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения, на которое отправляется ответ (MsgID из Запроса)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AppID" type="tns:AppIDType">
+					<xs:annotation>
+						<xs:documentation>Номер заявки на участие в закупке (уникальный ID в пределах площадки)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Status">
+					<xs:annotation>
+						<xs:documentation>Результат выполнения операции</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="StatusCode" type="xs:integer">
+								<xs:annotation>
+									<xs:documentation>Код завершения операции</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="StatusDesc" type="tns:string-1000" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Описание статуса</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--=======================  Разблокировка денежных средств на счёте участника закупки  =======================-->
+	<xs:element name="FundsReleaseRq">
+		<xs:annotation>
+			<xs:documentation>Запрос на разблокировку денежных средств на счёте участника закупки</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AppID" type="tns:AppIDType">
+					<xs:annotation>
+						<xs:documentation>Номер заявки на участие в закупки (уникальный ID в пределах площадки)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Name" type="tns:NameType">
+					<xs:annotation>
+						<xs:documentation>Участник закупки: название в случае ЮЛ/ИП / ФИО в случае ФЛ</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="INN" type="tns:INNType">
+					<xs:annotation>
+						<xs:documentation>ИНН участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="KPP" type="tns:KPPType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>КПП участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Account" type="tns:AccountType">
+					<xs:annotation>
+						<xs:documentation>Счёт участника закупки, на котором были заблокированы средства</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AmountToReleasex100" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>Сумма, которую необходимо разблокировать (умноженная на 100)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="FundsReleaseRs">
+		<xs:annotation>
+			<xs:documentation>Ответ на Запрос на разблокировку денежных средств на счёте участника закупки</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="CorrelationID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения, на которое отправляется ответ (MsgID из Запроса)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AppID" type="tns:AppIDType">
+					<xs:annotation>
+						<xs:documentation>Номер заявки на участие в закупке (уникальный ID в пределах площадки)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Status">
+					<xs:annotation>
+						<xs:documentation>Результат выполнения операции</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="StatusCode" type="xs:integer">
+								<xs:annotation>
+									<xs:documentation>Код завершения операции</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="StatusDesc" type="tns:string-1000" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Описание статуса</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--=====================  Разблокировка денежных средств с перечислением их в бюджет  ====================== -->
+	<xs:element name="FundsReleaseBudgetsFeeRq">
+		<xs:annotation>
+			<xs:documentation>Запрос на разблокировку денежных средств с перечислением их в бюджет</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AppID" type="tns:AppIDType">
+					<xs:annotation>
+						<xs:documentation>Номер заявки на участие в закупке (уникальный ID в пределах площадки)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Name" type="tns:NameType">
+					<xs:annotation>
+						<xs:documentation>Участник закупки: название в случае ЮЛ/ИП / ФИО в случае ФЛ</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="INN" type="tns:INNType">
+					<xs:annotation>
+						<xs:documentation>ИНН участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="KPP" type="tns:KPPType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>КПП участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Account" type="tns:AccountType">
+					<xs:annotation>
+						<xs:documentation>Счёт участника закупки, на котором были заблокированы средства</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AmountToTransferx100" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>Сумма, которую необходимо перечислить в бюджет (умноженная на 100)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BudgetBankDetails">
+					<xs:annotation>
+						<xs:documentation>Банковские реквизиты, по которым необходимо осуществить перечисление в бюджет</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="BankName" type="tns:BankNameType">
+								<xs:annotation>
+									<xs:documentation>Название Банка получателя платежа</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="BIK" type="tns:BIKType">
+								<xs:annotation>
+									<xs:documentation>БИК Банка получателя</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="BankAccount" type="tns:AccountType" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Корсчёт Банка получателя</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="INN" type="tns:INNType">
+								<xs:annotation>
+									<xs:documentation>ИНН получателя</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="KPP" type="tns:KPPType">
+								<xs:annotation>
+									<xs:documentation>КПП получателя</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Account" type="tns:AccountType">
+								<xs:annotation>
+									<xs:documentation>Расчётный счёт получателя</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Recipient" type="tns:RecipientType">
+								<xs:annotation>
+									<xs:documentation>Получатель</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Ground" type="tns:GroundType">
+								<xs:annotation>
+									<xs:documentation>Назначение платежа</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="OKTMO" type="tns:OKTMOType" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>ОКТМО</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="KBK" type="tns:KBKType" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Код Бюджетной Классификации</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="FundsReleaseBudgetsFeeRs">
+		<xs:annotation>
+			<xs:documentation>Ответ на Запрос на разблокировку денежных средств с перечислением их в бюджет</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="CorrelationID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения, на которое отправляется ответ (MsgID из Запроса)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AppID" type="tns:AppIDType">
+					<xs:annotation>
+						<xs:documentation>Номер заявки на участие в закупке (уникальный ID в пределах площадки)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Status">
+					<xs:annotation>
+						<xs:documentation>Результат выполнения операции</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="StatusCode" type="xs:integer">
+								<xs:annotation>
+									<xs:documentation>Код завершения операции</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="StatusDesc" type="tns:string-1000" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Описание статуса</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--==================================  Перечисление комиссии оператору  =================================== -->
+	<xs:element name="OperatorFeeRq">
+		<xs:annotation>
+			<xs:documentation>Запрос на перечисление комиссии Оператору</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AppID" type="tns:AppIDType">
+					<xs:annotation>
+						<xs:documentation>Номер заявки на участие в закупке (уникальный ID в пределах площадки)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Name" type="tns:NameType">
+					<xs:annotation>
+						<xs:documentation>Участник закупки: название в случае ЮЛ/ИП / ФИО в случае ФЛ</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="INN" type="tns:INNType">
+					<xs:annotation>
+						<xs:documentation>ИНН участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="KPP" type="tns:KPPType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>КПП участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Account" type="tns:AccountType">
+					<xs:annotation>
+						<xs:documentation>Счёт участника закупки, с которого необходимо снять комиссию</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AmountToTransferx100" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>Сумма, которую необходимо перечислить Оператору (умноженная на 100)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorBankDetails">
+					<xs:annotation>
+						<xs:documentation>Банковские реквизиты, по которым необходимо осуществить перечисление</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="BankName" type="tns:BankNameType">
+								<xs:annotation>
+									<xs:documentation>Название Банка получателя платежа</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="BIK" type="tns:BIKType">
+								<xs:annotation>
+									<xs:documentation>БИК Банка получателя</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="BankAccount" type="tns:AccountType" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Корсчёт Банка получателя</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="INN" type="tns:INNType">
+								<xs:annotation>
+									<xs:documentation>ИНН получателя</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="KPP" type="tns:KPPType">
+								<xs:annotation>
+									<xs:documentation>КПП получателя</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Account" type="tns:AccountType">
+								<xs:annotation>
+									<xs:documentation>Расчётный счёт получателя</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Recipient" type="tns:RecipientType">
+								<xs:annotation>
+									<xs:documentation>Получатель</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Ground" type="tns:GroundType">
+								<xs:annotation>
+									<xs:documentation>Назначение платежа</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="OperatorFeeRs">
+		<xs:annotation>
+			<xs:documentation>Ответ на Запрос на перечисление комиссии Оператору</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="CorrelationID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения, на которое отправляется ответ (MsgID из Запроса)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AppID" type="tns:AppIDType">
+					<xs:annotation>
+						<xs:documentation>Номер заявки на участие в закупке (уникальный ID в пределах площадки)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Status">
+					<xs:annotation>
+						<xs:documentation>Результат выполнения операции</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="StatusCode" type="xs:integer">
+								<xs:annotation>
+									<xs:documentation>Код завершения операции</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="StatusDesc" type="tns:string-1000" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Описание статуса</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--=========================  Уведомление о статусе счёта участника торгов ================================= -->
+	<xs:element name="AccStatusNotifyRq">
+		<xs:annotation>
+			<xs:documentation>Уведомление в сторону площадки о статусе счёта участника торгов</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Account" type="tns:AccountType">
+					<xs:annotation>
+						<xs:documentation>Счёт участника закупки, по которому рассылается уведомление</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="NotifyCode" type="tns:NotifyCodeType">
+					<xs:annotation>
+						<xs:documentation>Код типа уведомления</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Name" type="tns:NameType">
+					<xs:annotation>
+						<xs:documentation>Участник закупки: название в случае ЮЛ/ИП (ФИО в случае ФЛ)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="INN" type="tns:INNType">
+					<xs:annotation>
+						<xs:documentation>ИНН участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="KPP" type="tns:KPPType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>КПП участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OGRN" type="tns:OGRNType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>ОГРН участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="AccStatusNotifyRs">
+		<xs:annotation>
+			<xs:documentation>Ответ на Уведомление в сторону площадки о статусе счёта участника торгов</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время передачи сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="CorrelationID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения, на которое отправляется ответ (MsgID из Запроса)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="StatusCode" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>Код обработки уведомления на стороне площадки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--=========================  Получение реквизитов участника закупки  ================================= -->
+	<xs:element name="PartyCheckRq">
+		<xs:annotation>
+			<xs:documentation>Запрос в Банк на получение реквизитов участника закупки</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="INN" type="tns:INNType">
+					<xs:annotation>
+						<xs:documentation>ИНН участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="KPP" type="tns:KPPType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>КПП участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OGRN" type="tns:OGRNType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>ОГРН участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="PartyCheckRs">
+		<xs:annotation>
+			<xs:documentation>Ответ/Квитанция в ОЭП на запрос на проверку реквизитов участника закупки</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время передачи сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="CorrelationID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения, на которое отправляется ответ (MsgID из Запроса)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="INN" type="tns:INNType">
+					<xs:annotation>
+						<xs:documentation>ИНН участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="KPP" type="tns:KPPType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>КПП участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OGRN" type="tns:OGRNType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>ОГРН участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:choice>
+					<xs:element name="Response">
+						<xs:annotation>
+							<xs:documentation>Положительный бизнес – ответ с результатами обработки в ОЭП на запрос на проверку реквизитов участника закупки</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Name" type="tns:NameType">
+									<xs:annotation>
+										<xs:documentation>Участник закупки: название в случае ЮЛ/ИП (ФИО в случае ФЛ)</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="Account" type="tns:AccountType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:documentation>Счёт участника закупки</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Status">
+						<xs:annotation>
+							<xs:documentation>Результат выполнения операции</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="StatusCode" type="xs:integer">
+									<xs:annotation>
+										<xs:documentation>Код завершения операции</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="StatusDesc" type="tns:string-1000" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Описание статуса</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--========================  Отзыв запроса на перечисление комиссии Оператору  ========================= -->
+	<xs:element name="OperatorFeeCancelRq">
+		<xs:annotation>
+			<xs:documentation>Запрос ОЭП об отзыве запроса на перечисление комиссии Оператору</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AppID" type="tns:AppIDType">
+					<xs:annotation>
+						<xs:documentation>Номер заявки на участие в закупках (уникальный ID в пределах площадки)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Name" type="tns:NameType">
+					<xs:annotation>
+						<xs:documentation>Участник закупки: название в случае ЮЛ/ИП / ФИО в случае ФЛ</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="INN" type="tns:INNType">
+					<xs:annotation>
+						<xs:documentation>ИНН участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="KPP" type="tns:KPPType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>КПП участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Account" type="tns:AccountType">
+					<xs:annotation>
+						<xs:documentation>Счёт участника закупки, с которого предполагалось снять комиссию Оператора</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperFeeID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>MsgID первоначального запроса на комиссию</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AmountToTransferx100" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>Сумма, которая была в запросе на перевод комиссии Оператора (для передачи целочисленного значения сумма умножается на 100)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="OperatorFeeCancelRs">
+		<xs:annotation>
+			<xs:documentation>Ответ Банка на запрос ОЭП об отзыве запроса на перечисление комиссии Оператору</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="CorrelationID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения, на которое отправляется ответ (MsgID из Запроса)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AppID" type="tns:AppIDType">
+					<xs:annotation>
+						<xs:documentation>Номер заявки на участие в закупке (уникальный ID в пределах площадки)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:choice>
+					<xs:element name="Balancex100" type="xs:integer">
+						<xs:annotation>
+							<xs:documentation>Остаток, который удалось отозвать, в случае частичного исполнения перевода (для передачи целочисленного значения сумма умножается на 100)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Status">
+						<xs:annotation>
+							<xs:documentation>Результат выполнения операции</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="StatusCode" type="xs:integer">
+									<xs:annotation>
+										<xs:documentation>Код завершения операции</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="StatusDesc" type="tns:string-1000" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Описание статуса</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--========================  Наличие суммы денежных средств на счёте  ========================= -->
+	<xs:element name="AmountCheckRq">
+		<xs:annotation>
+			<xs:documentation>Запрос ОЭП о наличие суммы денежных средств на счёте</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AppID" type="tns:AppIDType">
+					<xs:annotation>
+						<xs:documentation>Номер заявки на участие в закупках (уникальный ID в пределах площадки)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Name" type="tns:NameType">
+					<xs:annotation>
+						<xs:documentation>Участник закупки: название в случае ЮЛ/ИП / ФИО в случае ФЛ</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="INN" type="tns:INNType">
+					<xs:annotation>
+						<xs:documentation>ИНН участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="KPP" type="tns:KPPType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>КПП участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Account" type="tns:AccountType">
+					<xs:annotation>
+						<xs:documentation>Счёт участника закупки, с которого предполагалось снять комиссию Оператора</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Amountx100" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>Сумма (для передачи целочисленного значения сумма умножается на 100)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="AmountCheckRs">
+		<xs:annotation>
+			<xs:documentation>Ответ на запрос ОЭП о наличие суммы денежных средств на счёте</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="CorrelationID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения, на которое отправляется ответ (MsgID из Запроса)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AppID" type="tns:AppIDType">
+					<xs:annotation>
+						<xs:documentation>Номер заявки на участие в закупке (уникальный ID в пределах площадки)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Status">
+					<xs:annotation>
+						<xs:documentation>Результат выполнения операции</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="StatusCode" type="xs:integer">
+								<xs:annotation>
+									<xs:documentation>Код завершения операции</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="StatusDesc" type="tns:string-1000" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Описание статуса</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--=========================  Наличие аккредитации Клиента на Площадке ================================= -->
+	<xs:element name="ClientCheckRq">
+		<xs:annotation>
+			<xs:documentation>Запрос Банка о наличии аккредитации Клиента на Площадке</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Сквозной идентификатор (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="INN" type="tns:INNType">
+					<xs:annotation>
+						<xs:documentation>ИНН участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="KPP" type="tns:KPPType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>КПП участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OGRN" type="tns:OGRNType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>ОГРН участника закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ClientCheckRs">
+		<xs:annotation>
+			<xs:documentation>Ответ на запрос Банка о наличии аккредитации Клиента на Площадке</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время передачи сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="CorrelationID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения, на которое отправляется ответ (MsgID из Запроса)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:choice>
+					<xs:element name="Response">
+						<xs:annotation>
+							<xs:documentation>Положительный бизнес – ответ</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="AccredStart" type="xs:date">
+									<xs:annotation>
+										<xs:documentation>Дата начала действия аккредитации</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="AccredFinish" type="xs:date">
+									<xs:annotation>
+										<xs:documentation>Дата окончания действия аккредитации</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Status">
+						<xs:annotation>
+							<xs:documentation>Результат выполнения операции</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="StatusCode" type="xs:integer">
+									<xs:annotation>
+										<xs:documentation>Код завершения операции</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="StatusDesc" type="tns:string-1000" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Описание статуса</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--==============================  Подтверждение приёма бизнес-ответа ОЭП  ================================-->
+	<xs:element name="BusinessRsAck">
+		<xs:annotation>
+			<xs:documentation>Подтверждение приёма бизнес - ответа ОЭП</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения (UUID)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MsgTm" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Дата и время передачи сообщения</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="CorrelationID" type="tns:UUID">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор сообщения, на которое отправляется ответ (MsgID из сообщения, содержащего бизнес-ответ)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OperatorName" type="tns:OperatorNameType">
+					<xs:annotation>
+						<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BankID" type="tns:BankIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор банка</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="StatusCode" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>Код обработки ответа на стороне площадки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--======================================  Структурированные типы  =======================================-->
+	<xs:simpleType name="BIKType">
+		<xs:annotation>
+			<xs:documentation>Банковский идентификационный код банка</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:length value="9"/>
+			<xs:pattern value="[0-9]{9}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="string-30">
+		<xs:annotation>
+			<xs:documentation>Произвольный текст длиной от 1 до 30 символов</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="30"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OperatorNameType">
+		<xs:annotation>
+			<xs:documentation>Код площадки - оператора электронной закупки</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="tns:string-30"/>
+	</xs:simpleType>
+	<xs:simpleType name="AccountType">
+		<xs:annotation>
+			<xs:documentation>Счёт участника закупки, на котором будут заблокированы средства</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+			<xs:pattern value="[0-9]{20}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NameType">
+		<xs:annotation>
+			<xs:documentation>Название участника закупки (ФИО в случае ИП/ФЛ)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="tns:string-1000"/>
+	</xs:simpleType>
+	<xs:simpleType name="KPPType">
+		<xs:annotation>
+			<xs:documentation>Произвольный текст длиной от 1 до 9 символов</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="9"/>
+			<xs:pattern value="([0-9]{1}[1-9]{1}|[1-9]{1}[0-9]{1})([0-9]{2})([0-9A-F]{2})([0-9]{3})"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OGRNType">
+		<xs:annotation>
+			<xs:documentation>Произвольный текст длиной от 1 до 15 символов</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="11"/>
+			<xs:pattern value="([0-9]{15})|([0-9]{13})"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="INNType">
+		<xs:annotation>
+			<xs:documentation>Произвольный текст длиной от 1 до 12 символов</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="12"/>
+			<xs:pattern value="([0-9]{12})|([0-9]{10})"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AppIDType">
+		<xs:annotation>
+			<xs:documentation>Произвольный текст длиной от 1 до 50 символов</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BankIDType">
+		<xs:annotation>
+			<xs:documentation>Произвольный текст длиной от 1 до 30 символов</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="30"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BankNameType">
+		<xs:annotation>
+			<xs:documentation>Название Банка получателя платежа</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="140"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="string-100">
+		<xs:annotation>
+			<xs:documentation>Произвольный текст длиной от 1 до 100 символов</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="string-1000">
+		<xs:annotation>
+			<xs:documentation>Произвольный текст длиной от 1 до 1000 символов</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="1000"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RecipientType">
+		<xs:annotation>
+			<xs:documentation>Получатель</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="160"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="GroundType">
+		<xs:annotation>
+			<xs:documentation>Назначение платежа</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="210"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OKTMOType">
+		<xs:annotation>
+			<xs:documentation>ОКТМО</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="11"/>
+			<xs:pattern value="([0-9]{11})|([0-9]{8})"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="KBKType">
+		<xs:annotation>
+			<xs:documentation>Код Бюджетной Классификации</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+			<xs:pattern value="[0-9]{20}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UUID">
+		<xs:annotation>
+			<xs:documentation>Уникальный 16 байтовый идентификатор. Для обмена в рамках интеграционных проектов Сбербанка представляется набором из 32 символов без разделителей в шестнадцатиричной системе./</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="([0-9]|[a-f]|[A-F]){32}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NotifyCodeType">
+		<xs:annotation>
+			<xs:documentation>Код типа уведомления</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="1"/>
+			<xs:enumeration value="1">
+				<xs:annotation>
+					<xs:documentation>открытие(подключение) счёта</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="2">
+				<xs:annotation>
+					<xs:documentation>изменение в юрдосье</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="3">
+				<xs:annotation>
+					<xs:documentation>закрытие счёта</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="4">
+				<xs:annotation>
+					<xs:documentation>отключение опции (доп.Соглашения)</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
