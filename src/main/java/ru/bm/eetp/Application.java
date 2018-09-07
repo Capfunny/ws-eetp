@@ -18,8 +18,6 @@ public class Application extends SpringBootServletInitializer {
         if (args.length > 0) {
             Constants.DEBUG = args[0].equals("DEBUG");
         }
-       /*String cp = System.getProperty("java.class.path");
-       System.out.println("\nClassPath: "+ cp + "\n");*/
 
         SpringApplicationBuilder builder;
         builder = new SpringApplicationBuilder(Application.class);
