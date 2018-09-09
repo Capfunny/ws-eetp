@@ -18,7 +18,7 @@ public class Application extends SpringBootServletInitializer {
         if (args.length > 0) {
             Constants.DEBUG = args[0].equals("DEBUG");
         }
-///
+
         SpringApplicationBuilder builder;
         builder = new SpringApplicationBuilder(Application.class);
         builder.properties("spring.config.name:ws-eetp");
