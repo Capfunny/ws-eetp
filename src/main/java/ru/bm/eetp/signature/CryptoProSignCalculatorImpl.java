@@ -29,7 +29,6 @@ public class CryptoProSignCalculatorImpl implements SignCalculator {
         return signatureBytes;
     }
 
-
     /**
      * Создание подписи
      *

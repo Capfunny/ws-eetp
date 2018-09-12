@@ -15,9 +15,9 @@ public class Application extends SpringBootServletInitializer {
 
 
     public static void main(String[] args) {
-        if (args.length > 0) {
+        /*if (args.length > 0) {
             Constants.DEBUG = args[0].equals("DEBUG");
-        }
+        }*/
 
         SpringApplicationBuilder builder;
         builder = new SpringApplicationBuilder(Application.class);

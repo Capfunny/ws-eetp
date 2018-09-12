@@ -1,21 +1,23 @@
 package ru.bm.eetp.signature;
 
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.bm.eetp.signature.keystore.PrivateKeySupplierJvmKeyStore;
-import ru.bm.eetp.signature.keystore.PublicKeySupplierJvmKeyStore;
 import ru.bm.eetp.signature.keystore.PrivateKeySupplier;
-import ru.bm.eetp.signature.keystore.storage.VtbForExternalSignProperties;
+import ru.bm.eetp.signature.keystore.storage.SignStorageProperties;
 
 import java.security.PrivateKey;
 
 @Component
 public class PrivateKeySupplierProducerImpl implements PrivateKeySupplierProducer {
 
-    private ApplicationContext applicationContext;
+    private SignStorageProperties signStorageProperties;
 
-    public PrivateKeySupplierProducerImpl(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    public PrivateKeySupplierProducerImpl(
+            @Qualifier("vtbPrivateKeySignProperties")
+                    SignStorageProperties signStorageProperties) {
+
+        this.signStorageProperties = signStorageProperties;
     }
 
     @Override
@@ -39,10 +41,9 @@ public class PrivateKeySupplierProducerImpl implements PrivateKeySupplierProduce
             public PrivateKey privateKey() {
 
                 if(privateKey == null) {
-                    VtbForExternalSignProperties properties = applicationContext.getBean(VtbForExternalSignProperties.class);
                     privateKey = new PrivateKeySupplierJvmKeyStore(
-                                   properties.getStoreType(), properties.getStorePass(),
-                                   properties.getKeyAlias(), properties.getKeyPass()
+                                   signStorageProperties.getStoreType(), signStorageProperties.getStorePass(),
+                                   signStorageProperties.getKeyAlias(), signStorageProperties.getKeyPass()
                            ).privateKey();
                 }
                 return privateKey;

@@ -1,22 +1,18 @@
-package ru.bm.eetp.controler;
+package ru.bm.eetp.signature;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bm.eetp.service.IncomingDocumentExtractor;
-import ru.bm.eetp.signature.EetpSigner;
-import ru.bm.eetp.signature.SignCalculator;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 import java.util.Optional;
-import javax.xml.bind.DatatypeConverter;
 import java.util.Base64;
 
+import static ru.bm.eetp.config.Utils.decodeBase64;
+
 @RestController("/debug/sign")
-@Profile("debug")
 public class DebugSignXmlDocument {
 
     private IncomingDocumentExtractor incomingDocumentExtractor;
@@ -33,11 +29,13 @@ public class DebugSignXmlDocument {
 
         Optional<String> extract = incomingDocumentExtractor.extract(stringDocumentBody);
 
-        String documentBody = extract.orElse("nonenonenonenone");
+        String documentBase64 = extract.get();
 
-        return calculateSignGost(signatureIdentification, documentBody)+" document-length => " + documentBody.length()
-                + " start => '" + documentBody.substring(0, 5) + "'"
-                +" ... end => '" + documentBody.substring(documentBody.length() - 10) + "'";
+        String documentXML = decodeBase64(documentBase64);
+
+        return calculateSignGost(signatureIdentification, documentXML)+" document-length => " + documentBase64.length()
+                + " start => '" + documentBase64.substring(0, 5) + "'"
+                +" ... end => '" + documentBase64.substring(documentBase64.length() - 10) + "'";
     }
 
     private String calculateSignGost(String signatureIdentification, String stringDocumentBody) {
@@ -46,15 +44,7 @@ public class DebugSignXmlDocument {
         String signature = new String(Base64.getEncoder().encode(signCalculator.signature()));
 
         return "Sign for '"+ signatureIdentification + "' "
-                + signature;
+                + "\n=>" + signature+"<=\n";
     }
 
-    private String calculateSign(String keyCode, String stringDocumentBody) {
-        try {
-            return "Sign for '"+ keyCode + "' "
-                    + DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest(stringDocumentBody.getBytes()));
-        } catch (NoSuchAlgorithmException e) {
-            return "error calculate signature";
-        }
-    }
 }

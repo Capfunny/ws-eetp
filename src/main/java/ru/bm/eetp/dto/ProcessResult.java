@@ -8,7 +8,8 @@ public enum ProcessResult {
     DOCUMENT_VALIDATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, -41, "Валидация документа по XSD не пройдена"),
     SIGNATURE_VALIDATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, -53, "Проверка ЭЦП не пройдена"),
     SERVICE_UNAVAILABLE_ERROR(HttpStatus.SERVICE_UNAVAILABLE, 0, "HTTP/1.1 503 Service Unavailable"),
-    SIGNING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 0, "600 Signing error");
+    SIGNING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, -600, "600 Signing error"),
+    REMOTE_URL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, -666, "666 Remote URL error");
 
     private final HttpStatus httpCode;
     private final int errorCode;

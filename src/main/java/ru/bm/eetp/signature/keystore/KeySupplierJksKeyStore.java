@@ -1,5 +1,6 @@
 package ru.bm.eetp.signature.keystore;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -11,16 +12,19 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-public final class KeySupplierJvmKeyStore {
+public final class KeySupplierJksKeyStore {
 
+    private String storePath;
     private String storeType;
     private String storePass;
     private String keyAlias;
     private String keyPass;
+
     private PublicKey publicKey;
     private PrivateKey privateKey;
 
-    public KeySupplierJvmKeyStore(String storeType, String storePass, String keyAlias, String keyPass) {
+    public KeySupplierJksKeyStore(String storePath, String storeType, String storePass, String keyAlias, String keyPass) {
+        this.storePath = storePath;
         this.storeType = storeType;
         this.storePass = storePass;
         this.keyAlias = keyAlias;
@@ -58,6 +62,7 @@ public final class KeySupplierJvmKeyStore {
     private void loadPublicKey() {
 
         try {
+
             KeyStore keyStore = keyStore();
 
             X509Certificate certificate = (X509Certificate) keyStore.getCertificate(keyAlias);
@@ -72,9 +77,10 @@ public final class KeySupplierJvmKeyStore {
 
     private KeyStore keyStore() throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
         KeyStore keyStore = KeyStore.getInstance(storeType);
-        InputStream storeStream = null;
-
-        keyStore.load(storeStream, getPasswordAsCharArray());
+        System.out.println(storePath);
+        try (InputStream storeStream = new FileInputStream(storePath)){
+            keyStore.load(storeStream, getPasswordAsCharArray());
+        }
         return keyStore;
     }
 

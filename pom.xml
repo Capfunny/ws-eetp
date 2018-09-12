@@ -32,24 +32,19 @@
             <version>2.0.3.RELEASE</version>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
-            <!--<scope>provided</scope>-->
-        </dependency>
+            &lt;!&ndash;<scope>provided</scope>&ndash;&gt;
+        </dependency>-->
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>5.0.7.RELEASE</version>
+           <!-- <version>5.0.7.RELEASE</version>-->
         </dependency>
 
-       <!-- <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>5.4.1.Final</version>
-        </dependency>
--->        <dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
         </dependency>
@@ -105,6 +100,13 @@
             <artifactId>JCP</artifactId>
             <version>1.0.54</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.14.3</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
