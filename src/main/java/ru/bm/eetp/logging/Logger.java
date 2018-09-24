@@ -2,10 +2,10 @@ package ru.bm.eetp.logging;
 
 public interface Logger {
 
-    void logIncoming(String prefix, String message);
+    void logIncoming(String context);
 
-    void logOutcoming(String prexi, String message);
+    void logOutcoming(String context);
 
-    void logError(String prefix, String message);
+    void logError(String errorMessage, String context);
 
 }

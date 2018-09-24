@@ -16,9 +16,8 @@ public class XmlXsdValidatorImpl implements XmlXsdValidator {
 
     @Override
     public boolean validate(String content, String schemaFile) {
-
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try {
+            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema schema = schemaFactory.newSchema(new StreamSource(new StringReader(getResourceContent(schemaFile))));
 
             Validator validator = schema.newValidator();

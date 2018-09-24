@@ -1,5 +1,6 @@
 package ru.bm.eetp.dto;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.dom4j.Document;
@@ -49,4 +50,15 @@ public class XMLPackage {
         return signature;
     }
 
+    @Override
+    public String toString() {
+        try {
+            XmlMapper xmlMapper = new XmlMapper();
+            return xmlMapper.writeValueAsString(this);
+        }
+        catch (Exception e)
+        {
+           return "";
+        }
+    }
 }

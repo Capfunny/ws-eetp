@@ -20,9 +20,6 @@
 					</xs:annotation>
 				</xs:element>
 				<xs:element name="Signature">
-					<xs:annotation>
-						<xs:documentation>Подпись</xs:documentation>
-					</xs:annotation>
 					<xs:simpleType>
 						<xs:restriction base="xs:string">
 							<xs:maxLength value="15000"/>

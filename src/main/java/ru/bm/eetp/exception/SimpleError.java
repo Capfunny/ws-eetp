@@ -1,17 +1,17 @@
 package ru.bm.eetp.exception;
 
-import ru.bm.eetp.dto.ProcessResult;
+import ru.bm.eetp.dto.RequestResult;
 
 public class SimpleError extends RuntimeException {
 
-    ProcessResult processResult;
+    RequestResult requestResult;
 
-    public SimpleError(ProcessResult processResult) {
-        super("HTTP/1.1 503 Service Unavailable");
-        this.processResult = processResult;
+    public SimpleError(RequestResult requestResult) {
+        super(requestResult.getresultBody());
+        this.requestResult = requestResult;
     }
 
-    public ProcessResult getprocessResult() {
-        return processResult;
+    public RequestResult getRequestResult() {
+        return requestResult;
     }
 }

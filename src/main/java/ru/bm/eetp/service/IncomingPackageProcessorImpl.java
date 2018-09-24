@@ -1,9 +1,11 @@
 package ru.bm.eetp.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.bm.eetp.dto.ProcessResult;
 import ru.bm.eetp.signature.SignatureValidator;
 import ru.bm.eetp.signature.SignatureValidatorProducer;
+import ru.bm.eetp.signature.keystore.storage.SignatureCheckExcluder;
 
 import java.util.Optional;
 
@@ -17,18 +19,24 @@ public class IncomingPackageProcessorImpl implements IncomingPackageProcessor {
     private IncomingDocumentValidator incomingDocumentValidator;
     private IncomingDocumentExtractor incomingDocumentExtractor;
     private IncomingSignatureExtractor incomingSignatureExtractor;
+    private SignatureValidator signatureValidator;
+    private TagExtractor tagExtractor;
+    @Autowired  private SignatureCheckExcluder signatureCheckExcluder;
 
     public IncomingPackageProcessorImpl(SignatureValidatorProducer signatureValidatorProducer,
                                         IncomingPackageValidator incomingPackageValidator,
                                         IncomingDocumentValidator incomingDocumentValidator,
                                         IncomingDocumentExtractor incomingDocumentExtractor,
-                                        IncomingSignatureExtractor incomingSignatureExtractor) {
-
+                                        IncomingSignatureExtractor incomingSignatureExtractor,
+                                        SignatureValidator signatureValidator,
+                                        TagExtractor tagExtractor) {
         this.signatureValidatorProducer = signatureValidatorProducer;
         this.incomingPackageValidator = incomingPackageValidator;
         this.incomingDocumentValidator = incomingDocumentValidator;
         this.incomingDocumentExtractor = incomingDocumentExtractor;
         this.incomingSignatureExtractor = incomingSignatureExtractor;
+        this.signatureValidator = signatureValidator;
+        this.tagExtractor = tagExtractor;
     }
 
     @Override
@@ -37,56 +45,44 @@ public class IncomingPackageProcessorImpl implements IncomingPackageProcessor {
     }
 
     private ProcessResult doValidatePackage(String content) {
-        ProcessResult validateResult;
         // проверить по XSD первое сообщение
         incomingPackageValidator.validate(content);
         if( ! incomingPackageValidator.validateResult()) {
-            return validateResult = ProcessResult.PACKAGE_VALIDATION_ERROR;
+            return ProcessResult.PACKAGE_VALIDATION_ERROR;
         }
         //вытащиить и раскодировать документ
         String documentXML;
-
         try {
             // вытащить из первого сообщения атрибут с документом
             String documentBase64 = extractDocument(content);
-            debugg("documentBase64Content ", "=>"+documentBase64+"<=");
             // раскодировать base64
             documentXML = decodeBase64(documentBase64);
-
         } catch (Exception e) {
-            documentXML = "";
+            return ProcessResult.DOCUMENT_VALIDATION_ERROR;
         }
         // проверить раскодированный документ по XSD
         incomingDocumentValidator.validate(documentXML);
         if( ! incomingDocumentValidator.validateResult()) {
-            return validateResult = ProcessResult.DOCUMENT_VALIDATION_ERROR;
-        }
-        // вытащить и раскодировать подпись
-        byte[] signature;
-        try{
-           String signatureBase64 = extractSignature(content);
-           debugg("signaturetBase64Content ", "=>"+signatureBase64+"<=");
-            // раскодировать base64
-           signature = decodeBase64ToByte(signatureBase64);
-//           debugg("signature => ", signature);
-        }
-        catch (Exception e){
-            signature = new byte[0];
-        }
-
-        Optional<SignatureValidator> signatureValidatorOpt = signatureValidatorProducer.signatureValidator(documentXML);
-        if( ! signatureValidatorOpt.isPresent()) {
             return ProcessResult.DOCUMENT_VALIDATION_ERROR;
-        } else {
-            SignatureValidator signatureValidator = signatureValidatorOpt.get();
-            //валидировать раскодированную подпись
-            signatureValidator.validate(documentXML.getBytes(), signature);
-            if (!signatureValidator.getValidateResult()) {
+        }
+        // получаем имя торговой площадки и определяем, проверять ли подпись
+        boolean checkSignature = true;
+        Optional<String> operName = tagExtractor.extract("OperatorName",documentXML);
+        if (operName.isPresent()) {
+            checkSignature = (! signatureCheckExcluder.geteetpNames().contains(operName.get()));
+        }
+        // определяем, проверять ли подпись
+        if (checkSignature) {
+            // вытащить подпись
+            String signature = extractSignature(content);
+            //
+
+            //пытаемся валидировать подпись
+            if (! signatureValidator.validateSignature(documentXML, signature, null)) {
                 return ProcessResult.SIGNATURE_VALIDATION_ERROR;
             }
-            //вернуть результат валидации
-
         }
+        //если всё ок, возвращает ОК )))
         return ProcessResult.OK;
     }
 

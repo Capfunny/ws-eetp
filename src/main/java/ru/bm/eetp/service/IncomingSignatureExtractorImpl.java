@@ -9,14 +9,14 @@ import java.util.Optional;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class IncomingDocumentExtractorSimpleImpl implements IncomingDocumentExtractor {
+public class IncomingSignatureExtractorImpl implements IncomingSignatureExtractor {
 
     @Autowired
-    private TagExtractorImpl tagExtractor;
+    private TagExtractor tagExtractor;
 
     @Override
     public Optional<String> extract(String content) {
-        /* <Document> ...</Document>*/
-        return tagExtractor.extract("Document", content);
+        /* <Signature> ...</Signature>*/
+        return tagExtractor.extract("Signature", content);
     }
 }

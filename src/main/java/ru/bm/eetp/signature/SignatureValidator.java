@@ -1,7 +1,9 @@
 package ru.bm.eetp.signature;
 
+import java.security.cert.Certificate;
+
 public interface SignatureValidator {
 
-    void validate(byte[] document, byte[] signature);
+    boolean validateSignature(String document, String signature, Certificate[]  sertificates);
     boolean getValidateResult();
 }

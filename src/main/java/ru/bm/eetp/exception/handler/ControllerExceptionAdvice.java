@@ -15,13 +15,13 @@ import ru.bm.eetp.exception.SimpleError;
 public class ControllerExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(GWFaultError.class)
-    public ResponseEntity handleException(GWFaultError e, WebRequest request) {
+    public ResponseEntity handleException(GWFaultError e, WebRequest request){
         ErrorDetail errorDetail = new ErrorDetail(e.getprocessResult().getErrorCode(), e.getprocessResult().getErrorMessage() );
-        return new ResponseEntity<ErrorDetail>(errorDetail, e.getprocessResult().getHttpCode());
+        return new ResponseEntity(errorDetail, e.getprocessResult().getHttpCode());
     }
 
     @ExceptionHandler(SimpleError.class)
     public ResponseEntity handleException(SimpleError e, WebRequest request) {
-        return new ResponseEntity<String>(e.getprocessResult().getErrorMessage(), e.getprocessResult().getHttpCode());
+        return new ResponseEntity(e.getRequestResult().getresultBody(), e.getRequestResult().getresultCode());
     }
 }

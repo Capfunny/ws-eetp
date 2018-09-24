@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TagExtractorImpl implements TagExtractor {
+//@Component
+//@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class TagExtractorSimpleImpl implements TagExtractor {
 
     @Override
     public Optional<String> extract(String tagName, String content) {
